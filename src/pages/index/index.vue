@@ -1,40 +1,58 @@
 <template>
-	<view class="content">
-        <image class="logo" src="../../static/logo.png"></image>
-		<view>
-            <text class="title">{{title}}</text>
-        </view>
-	</view>
+  <view class="content">
+    <dance-list-view :dataList="danceList" :currentPageLength="currentPageLength" :hasNext="hasNext" @onDown="onDown" @onUp="onUp"></dance-list-view>
+  </view>
 </template>
 
 <script lang="ts">
-    import Vue from 'vue';
-	export default Vue.extend({
-		data() {
-			return {
-        title: 'Hello',
-			}
-		},
-		onLoad() {
-
-		},
-		methods: {
-		}
-	});
+import Vue from "vue";
+import { cloneDeep } from "lodash";
+import danceListView from "@/components/dance/danceList.vue";
+import * as DanceType from "@/types/dance";
+import { PAGE_SIZE } from "@/constants/list";
+import { getDanceList } from "@/services/dance";
+interface DataType {
+  danceList: Array<DanceType.DanceListItem>
+  newList: Array<DanceType.DanceListItem>
+  hasNext: boolean
+  currentPageLength: number
+}
+export default Vue.extend({
+  components: {
+    danceListView
+  },
+  data(): DataType {
+    return {
+      newList: [],
+      danceList: [],
+      hasNext: true,
+      currentPageLength: 0,
+    };
+  },
+  async onLoad() {
+    await this.getData(0);
+    this.danceList = cloneDeep(this.newList);
+  },
+  methods: {
+    async getData(page: number) {
+      const data = await getDanceList(page);
+      const { list } = data;
+      this.newList = list;
+      this.hasNext = this.newList.length === PAGE_SIZE;
+      this.currentPageLength = this.newList.length;
+    },
+    async onDown() {
+      await this.getData(0);
+      this.danceList = this.newList.concat(this.danceList);
+    },
+    async onUp(params: { page: number }) {
+      const { page } = params;
+      await this.getData(page);
+      this.danceList = this.danceList.concat(this.newList);
+    }
+  }
+});
 </script>
 
 <style>
-	.content {
-		text-align: center;
-		height: 400upx;
-	}
-    .logo{
-        height: 200upx;
-        width: 200upx;
-        margin-top: 200upx;
-    }
-	.title {
-		font-size: 36upx;
-		color: #8f8f94;
-	}
 </style>

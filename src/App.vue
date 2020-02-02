@@ -3,9 +3,9 @@
     export default Vue.extend({
         mpType: 'app',
         onLaunch() {
-            console.log('App Launch 123')
+            console.log('App Launch')
         },
-        onShow() {
+        async onShow() {
             console.log('App Show')
         },
         onHide() {
