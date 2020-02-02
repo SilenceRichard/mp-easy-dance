@@ -1,5 +1,12 @@
 <template>
-  <mescroll-uni :up="upOption" :down="downOption" @down="downCallback" @up="upCallback">
+  <mescroll-uni
+    height="100%"
+    :fixed="false"
+    :up="upOption"
+    :down="downOption"
+    @down="downCallback"
+    @up="upCallback"
+  >
     <view class="news-li" v-for="item in dataList" :key="item.id">
       <view>{{item.title}}</view>
       <view class="new-content">{{item.address}}</view>
@@ -10,8 +17,8 @@
 <script>
 import Vue from "vue";
 import * as DanceType from "@/types/dance";
-import { PAGE_SIZE, DOWN_OPTION, UP_OPTION } from '@/constants/list';
-import { eventBus } from '@/eventBus';
+import { PAGE_SIZE, DOWN_OPTION, UP_OPTION } from "@/constants/list";
+import { eventBus } from "@/eventBus";
 import MescrollUni from "@/components/mescroll-uni/mescroll-uni.vue";
 export default Vue.extend({
   name: "DanceList",
@@ -22,11 +29,11 @@ export default Vue.extend({
     },
     currentPageLength: {
       type: Number,
-      default: 0,
+      default: 0
     },
     hasNext: {
       type: Boolean,
-      default: true,
+      default: true
     }
   },
   components: {
@@ -48,9 +55,9 @@ export default Vue.extend({
     /*下拉刷新的回调 */
     downCallback(mescroll) {
       this.$emit("onDown");
-      eventBus.$on('serviceError', () => {
+      eventBus.$on("serviceError", () => {
         mescroll.endErr();
-      })
+      });
       mescroll.endSuccess();
       // //联网加载数据
       // this.getListDataFromNet(
@@ -72,9 +79,9 @@ export default Vue.extend({
     upCallback(mescroll) {
       const { num: page } = mescroll;
       this.$emit("onUp", { page });
-      eventBus.$on('serviceError', () => {
+      eventBus.$on("serviceError", () => {
         mescroll.endErr();
-      })
+      });
       mescroll.endSuccess(this.currentPageLength, this.hasNext); //必传参数(当前页的数据个数, 是否有下一页true/false)
       //联网加载数据
       // this.getListDataFromNet(

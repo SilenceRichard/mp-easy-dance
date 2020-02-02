@@ -3,8 +3,10 @@ export interface DanceListItem {
   id: string,
   title: string,
   address: string,
-  verbPerson: string, //发起人
   date: string, // YYYY-mm-dd
+  verbPerson: string, //发起人
+  avatar: string,
+  imageUrl: string,
 }
 export interface DanceList {
   list: Array<DanceListItem>
